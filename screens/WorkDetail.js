@@ -13,13 +13,18 @@ function WorkDetail({data}) {
     const iconColor = useColorModeValue("black", "white");
     const i18n = useI18n();
 
-    let date = new Date(workDetail.created_at);    
-    let dateCreated = new Intl.DateTimeFormat('en-US', { dateStyle: 'long' }).format(date); 
+    const date = new Date(workDetail.created_at);
+    const hasValidDate = !Number.isNaN(date.getTime());
+    const dateCreated = hasValidDate
+        ? new Intl.DateTimeFormat('en-US', { dateStyle: 'long' }).format(date)
+        : "";
 
     i18n.translations.en["dyna" + cameFrom + workDetail.id + "description"] = workDetail.description;    
     i18n.translations.ja["dyna" + cameFrom + workDetail.id + "description"] = workDetail.description_ja;    
     i18n.translations.en["dyna" + cameFrom + workDetail.id + "date"] = dateCreated;    
-    i18n.translations.ja["dyna" + cameFrom + workDetail.id + "date"] = i18n.strftime(date, "%Y年%m月%d日"); 
+    i18n.translations.ja["dyna" + cameFrom + workDetail.id + "date"] = hasValidDate
+        ? i18n.strftime(date, "%Y年%m月%d日")
+        : "";
 
     const handleButtonClick = async (url, event_name) => {
         if(url !== null) Linking.openURL(url); 

@@ -3,6 +3,7 @@ FROM node:16.20.2-bullseye-slim AS web-build
 WORKDIR /app
 
 COPY package.json package-lock.json ./
+COPY patches ./patches
 
 RUN npm ci --legacy-peer-deps
 

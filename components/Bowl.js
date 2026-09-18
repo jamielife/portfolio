@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {Scene, PerspectiveCamera, AmbientLight, PointLight } from "three";
 import { Renderer } from "expo-three";
 delete global.WebGLRenderingContex;
@@ -10,16 +10,30 @@ import { Center, useBreakpointValue } from "native-base";
 
 const Bowl = () => {    
     const [camera, setCamera] = useState();
-    const model = null;
-
-    let timeout;
+    const animationFrame = useRef();
+    const rendererRef = useRef();
+    const modelRequest = useRef();
+    const unmounted = useRef(false);
   
     useEffect(() => {
-      // Clear the animation loop when the component unmounts
-      return () => clearTimeout(timeout);
+      return () => {
+        unmounted.current = true;
+
+        if (animationFrame.current) {
+          cancelAnimationFrame(animationFrame.current);
+        }
+
+        if (modelRequest.current?.abort) {
+          modelRequest.current.abort();
+        }
+
+        rendererRef.current?.dispose();
+      };
     }, []);
   
-    const onContextCreate = async (gl) => {
+    const onContextCreate = useCallback((gl) => {
+        if (unmounted.current) return;
+
         const scene = new Scene();
         const camera = new PerspectiveCamera(
             50,
@@ -29,16 +43,18 @@ const Bowl = () => {
         );
         const quickSetPosition = 7;
         camera.position.set(quickSetPosition, quickSetPosition, 8.5);
-        setCamera(camera);
+        if (!unmounted.current) setCamera(camera);
 
         gl.canvas.setSize = {width: gl.drawingBufferWidth, height: gl.drawingBufferHeight}
 
         const renderer = new Renderer({gl});
+        rendererRef.current = renderer;
         renderer.setSize(gl.drawingBufferWidth, gl.drawingBufferHeight)
         
         var model;
         const loader = new GLTFLoader();
-        loader.load(require('../assets/ramen.glb'), function (gltf) { 
+        modelRequest.current = loader.load(require('../assets/ramen.glb'), function (gltf) {
+            if (unmounted.current) return;
             model = gltf.scene;
             model.castShadow = true;
             scene.add (model);
@@ -54,7 +70,8 @@ const Bowl = () => {
         scene.add(pointLight);
 
         const render = () => {
-            requestAnimationFrame(render);
+            if (unmounted.current) return;
+            animationFrame.current = requestAnimationFrame(render);
             if(model){
                 model.position.y = -2;
                 model.rotation.y += 0.0025;
@@ -65,7 +82,7 @@ const Bowl = () => {
         }
 
         render();
-    };    
+    }, []);
 
     const widthAndHeight = useBreakpointValue({
         base: 400,

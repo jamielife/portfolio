@@ -76,7 +76,7 @@ const Home = () => {
                     </Heading>
 
                     <Text fontSize={16} textAlign={"justify"}>{i18n.t('homePage.about')}</Text>                    
-                    <Button my={3} alignSelf="center" onPress={() => navigation.dispatch( CommonActions.navigate({ name: 'Work',  params: { cameFrom: 'Home' } } ) ) } >
+                    <Button my={3} alignSelf="center" onPress={() => navigation.dispatch( CommonActions.navigate({ name: 'Work' } ) ) } >
                         <Text color={"white"}>{i18n.t('homePage.workCTA')} <ChevronRightIcon size="xs" color="white" /></Text>
                     </Button>
 

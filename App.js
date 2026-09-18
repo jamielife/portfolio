@@ -1,10 +1,12 @@
 import 'react-native-gesture-handler';
-import { StyleSheet, StatusBar, Linking } from 'react-native';
+import { StyleSheet, StatusBar, Linking, Platform } from 'react-native';
 import React from 'react';
 import { View, NativeBaseProvider, extendTheme, useColorModeValue } from "native-base";
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem  } from '@react-navigation/drawer';
+import { DrawerContentScrollView, DrawerItemList, DrawerItem  } from '@react-navigation/drawer';
+import createDrawerNavigator from './navigation/createDrawerNavigator';
+import linking from './navigation/linking';
 import { BlurView } from 'expo-blur';
 import { FBAalytics } from './firebaseConfig';
 import { logEvent } from "firebase/analytics";
@@ -159,7 +161,7 @@ function DrawerMenu({colors}) {
         drawerActiveTintColor: text,
         drawerInactiveTintColor: text,
         drawerStyle: { backgroundColor: bg, },
-        unmountOnBlur: true,          
+        unmountOnBlur: true,
       }}      
       drawerContent={(props) => <CustomDrawerContent {...props} />} >
         <Drawer.Screen name="Home"  component={HomeDrawer}  options={customScreenOptions} />
@@ -197,7 +199,7 @@ export default function App() {
   return (
     <NativeBaseProvider colorModeManager={colorModeManager} theme={theme} flex={1}>
       <LangProvider>        
-          <NavigationContainer flex={1} >
+          <NavigationContainer flex={1} linking={Platform.OS === 'web' ? linking : undefined} >
           <StatusBar backgroundColor="rgb(0, 52, 72)" barStyle="light-csontent" hidden={false} />
           <DrawerMenu colors={colors} />
         </NavigationContainer>

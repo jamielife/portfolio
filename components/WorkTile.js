@@ -5,6 +5,7 @@ import { useI18n } from '../components/LangContext';
 import { MaterialIcons } from "@expo/vector-icons";
 import { FBAalytics } from '../firebaseConfig';
 import { logEvent } from "firebase/analytics";
+import { toWorkSlug } from '../utils/workSlug';
 
 function WorkTile({data, cameFrom}) {
     const navigation = useNavigation(); 
@@ -29,7 +30,7 @@ function WorkTile({data, cameFrom}) {
         <Pressable m={2} shadow="2" rounded="lg" w={{ base: 96, md: 72, lg: 48 }} 
             _light={{ bg: "coolGray.50" }} _dark={{ bg: "gray.800" }} 
             onPress={() => {
-                if(cameFrom == "Work") navigation.dispatch( CommonActions.navigate({ name: 'WorkDetail', initial: false,  params: { cameFrom: cameFrom, workDetail: data } } ) );
+                if(cameFrom == "Work") navigation.dispatch( CommonActions.navigate({ name: 'WorkDetail', params: { slug: toWorkSlug(data.name) } } ) );
                 else handleButtonClick(data.url, i18n.t("dyna" + cameFrom + data.id + "name") + "__tile_opened");
             }} 
             _hover={{ _light:{ bg: "white" }, _dark:{ bg: "gray.800:alpha.60" }, style:{ transform: [{ scale: 1.025 }] } }}

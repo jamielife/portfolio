@@ -1,13 +1,24 @@
 import { Text, Container, Icon, Flex, Avatar, Button, Link, HStack, Center, Heading, VStack, ScrollView, ChevronRightIcon, useColorModeValue, View, Modal, Image } from "native-base";
 import { useNavigation, CommonActions  } from '@react-navigation/native';
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
-import { Linking, } from "react-native";
+import { Linking, Platform } from "react-native";
 import Bowl from "../components/Bowl";
 import Footer from "../components/Footer";
 import { useI18n } from '../components/LangContext';
 import { useState } from "react";
 import { FBAalytics } from '../firebaseConfig';
 import { logEvent } from "firebase/analytics";
+
+const webModalAnimationProps = Platform.OS === "web" ? {
+    _fade: {
+        animate: { transition: { useNativeDriver: false } },
+        exit: { transition: { useNativeDriver: false } },
+    },
+    _backdropFade: {
+        animate: { transition: { useNativeDriver: false } },
+        exit: { transition: { useNativeDriver: false } },
+    },
+} : {};
 
 const Home = () => {
     const navigation = useNavigation(); 
@@ -43,7 +54,7 @@ const Home = () => {
                     <Link onPress={() => handleButtonClick(null, "profilePic_opened") && setShowModal(true)}>
                         <Avatar borderWidth={2} mt={0} alignSelf="center" size={[20, 110]} source={ require("../assets/me.jpg")} > Jamie </Avatar>
                     </Link>                        
-                    <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+                    <Modal isOpen={showModal} onClose={() => setShowModal(false)} {...webModalAnimationProps}>
                         <Modal.Content maxWidth="600px">
                             <Modal.CloseButton />
                             <Image w={600} height={600} source={{

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Text, Flex, Button, Center, Heading, VStack, ScrollView, ChevronRightIcon, View } from "native-base";
 import { Linking } from "react-native";
-import supabase from "../supabase";
+import pocketbase from "../pocketbase";
 import WorkTile from "../components/WorkTile";
 import Bowl from "../components/Bowl";
 import Footer from "../components/Footer";
@@ -16,12 +16,15 @@ const Work = () => {
     
     useEffect(() => {
         const fetchWork = async () => {
-            const {data, error} = await supabase.from('work').select('*').order('featured', {ascending: false}).eq('hidden', false);
-            
-            if (error) {
-                console.log('error', error);
-            } else {
+            try {
+                const data = await pocketbase.collection('work').getFullList({
+                    filter: 'hidden = false',
+                    sort: '-featured',
+                });
+
                 setWork(data);
+            } catch (error) {
+                console.log('error', error);
             }
         };
         if (componentMounted.current) {

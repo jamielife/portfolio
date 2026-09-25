@@ -73,8 +73,8 @@ export function LangProvider({ children }){
     } 
     
     function toggleLang(newLang){
-        //console.log(`newLange val at LangContext:47: ${newLang}`);
         setLocale(newLang);
+        localStorage.setItem('locale', newLang);
     }
 
     return(

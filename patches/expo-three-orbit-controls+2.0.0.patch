@@ -1,8 +1,22 @@
 diff --git a/node_modules/expo-three-orbit-controls/build/OrbitControls.js b/node_modules/expo-three-orbit-controls/build/OrbitControls.js
-index 5540eb2..b91dcf2 100644
+index 5540eb2..b320b89 100644
 --- a/node_modules/expo-three-orbit-controls/build/OrbitControls.js
 +++ b/node_modules/expo-three-orbit-controls/build/OrbitControls.js
-@@ -631,7 +631,7 @@ export class OrbitControls extends EventDispatcher {
+@@ -136,10 +136,12 @@ export class OrbitControls extends EventDispatcher {
+                     if (typeof window !== 'undefined') {
+                         window.document.removeEventListener('mousemove', this.onMouseMove, false);
+                         window.document.removeEventListener('mouseup', this.onMouseUp, false);
+-                        window.removeEventListener('keydown', this.onKeyDown, false);
+                     }
+                 }
+             }
++            if (typeof window !== 'undefined') {
++                window.removeEventListener('keydown', this.onKeyDown, false);
++            }
+             //this.dispatchEvent( { type: 'dispose' } ); // should this be added here?
+         };
+         // Private methods
+@@ -631,7 +633,7 @@ export class OrbitControls extends EventDispatcher {
              const offset = new Vector3();
              // so camera.up is the orbit axis
              const quat = new Quaternion().setFromUnitVectors(this.object.up, new Vector3(0, 1, 0));
